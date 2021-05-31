@@ -2,6 +2,7 @@ import os
 import random
 import discord
 from discord.ext import commands
+from discord.utils import get
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,25 +12,40 @@ GUILD = os.environ['Discord_Guild']
 
 bot = commands.Bot(command_prefix='!')
 
-emoji1 = '\N{THUMBS UP SIGN}'
-emoji2 = '\N{THUMBS DOWN SIGN}'
+emojis = [ '\N{THUMBS UP SIGN}', '\N{THUMBS DOWN SIGN}']
 
+global vote
 
-@bot.command(name = 'rpt', help = "Repeats text entered after the command.  Put sentences in quotes.")
-async def rpt(ctx, message):
-  await ctx.send(message)
-  if message.content.startsWith("!rpt"):
-    message.react(emoji1)
-    message.react(emoji2)
+class MyClient(discord.Client):
+  async def on_ready(self):
+    print('The bot is ready and logged on as', self.user)
 
+@bot.command(name = 'p', help = "Repeats text entered after the command.  Put sentences in quotes.")
+async def poll(ctx, arg):
+  if ctx.author != bot.user.id:
+    await ctx.channel.send("{}".format(ctx.author.mention)+' Asks "'+arg+'"')
 
+@bot.command(name = 'ph', help = "Pings the question to @here.  Put sentences in quotes.")
+async def poll(ctx, arg):
+  if ctx.author != bot.user.id:
+    await ctx.channel.send("{}".format(ctx.author.mention)+' Asks '+' @here '+arg)
 
+vote = 0
+@bot.event
+async def on_raw_reaction_add(payload):
   
-@bot.command(name='quote', help = 'will eventualy repeat the user\'s text')
+    if payload.emoji.name == '\N{THUMBS UP SIGN}':
+      global vote
+      vote = vote+1
+    if payload.emoji.name == '\N{THUMBS DOWN SIGN}':
+      vote = vote-1
+    print(int(vote))
+  
+@bot.command(name='quote', help = 'spits a quote')
 async def u_repeat(ctx):
   quote = [
-    'apple',
-    '_',
+    'LMAO',
+    '止めて下さい',
     (
       "AAAAAAAAAAAAAAAAAAAAA"
     )
@@ -37,6 +53,5 @@ async def u_repeat(ctx):
   response = random.choice(quote)
   await ctx.send(response)
 
+client = MyClient
 bot.run(TOKEN)
-
-

@@ -1,25 +1,10 @@
-import os
-import random
-import discord
-from discord.ext import commands
-from dotenv import load_dotenv
+class MyClient(discord.Client):
+  async def on_ready(self):
+    print('The bot is ready and logged on as', self.user)
 
-load_dotenv()
-
-TOKEN = os.environ['Discord_TOKEN']
-GUILD = os.environ['Discord_Guild']
-
-bot = commands.Bot(command_prefix='!')
-
-
-@bot.command(name = 'rpt',)
-async def on_message(message):
-  global rept
-  rept = message.content.starts_with('!')
-  response = rept
-  await message.send(response)
-
-
-bot.run(TOKEN)
-
-
+  async def on_message(self, message):
+    if message.author == self.user:
+      await message.add_reaction(emojis)
+    
+    if message.author != self.user:
+      await message.channel.send("@{}".format(message.author.mention))

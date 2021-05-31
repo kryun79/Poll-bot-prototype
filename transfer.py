@@ -11,7 +11,7 @@ GUILD = os.environ['Discord_Guild']
 
 bot = commands.Bot(command_prefix='!')
 
-Emojis = ['Thumbs Up Sign', 'Thumbs Down Sign']
+emojis = ['Thumbs Up Sign', 'Thumbs Down Sign']
 
 
 @bot.command(name = 'rpt', help = "Repeats text entered after the command.  Put sentences in quotes.")
@@ -20,9 +20,8 @@ async def rpt(ctx, arg):
 
 @bot.event
 async def on_message(message):
-  message = 'l'
-  await message.add_reaction(Emojis[1])
-  await message.add_reaction(Emojis[0])
+  if(message.author.id == bot.user.id): 
+    await message.add_reaction(emojis)
 
   
 @bot.command(name='quote', help = 'will eventualy repeat the user\'s text')
