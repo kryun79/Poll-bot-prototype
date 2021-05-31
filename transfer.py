@@ -1,15 +1,42 @@
+import os
+import random
 import discord
-import pandas as pd
+from discord.ext import commands
+from dotenv import load_dotenv
 
-client = discord.Client()
-guild = discord.Guild
+load_dotenv()
 
-@client.event
+TOKEN = os.environ['Discord_TOKEN']
+GUILD = os.environ['Discord_Guild']
+
+bot = commands.Bot(command_prefix='!')
+
+Emojis = ['Thumbs Up Sign', 'Thumbs Down Sign']
+
+
+@bot.command(name = 'rpt', help = "Repeats text entered after the command.  Put sentences in quotes.")
+async def rpt(ctx, arg):
+    await ctx.send(arg)
+
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
-        return
-    elif message.content.startswith('_'):
+  message = 'l'
+  await message.add_reaction(Emojis[1])
+  await message.add_reaction(Emojis[0])
 
-        cmd = message.content.split()[0].replace("_","")
-        if len(message.content.split()) > 1:
-            parameters = message.content.split()[1:]
+  
+@bot.command(name='quote', help = 'will eventualy repeat the user\'s text')
+async def u_repeat(ctx):
+  quote = [
+    'apple',
+    '_',
+    (
+      "AAAAAAAAAAAAAAAAAAAAA"
+    )
+  ]
+  response = random.choice(quote)
+  await ctx.send(response)
+
+bot.run(TOKEN)
+
+
